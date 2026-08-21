@@ -1,9 +1,9 @@
 # Fault-Prediction-in-Vehicles
 
 Physics-informed simulator for **predictive maintenance of
-military battle tanks**. Every sensor is simulated from the physics-based
+military vehicles**. Every sensor is simulated from the physics-based
 equations in
-`Physics_Based_Sensor_Equations_Military_Tank_Preventive_Maintenance.docx`
+`Physics_Based_Sensor_Equations_Vehicle_Preventive_Maintenance.docx`
 and coupled through an evolving shared vehicle state, so that injected
 faults degrade the readings in a physically consistent way.  The
 resulting labelled datasets feed AI models for anomaly detection, fault
@@ -66,16 +66,16 @@ structural_crack drivetrain_efficiency_loss
 
 ```python
 import numpy as np
-from tank_sim.config import TankConfig
-from tank_sim.faults import FaultManager
-from tank_sim.tank import TankSimulator
-from tank_sim.dataset import write_dataset
+from vehicle_sim.config import VehicleConfig
+from vehicle_sim.faults import FaultManager
+from vehicle_sim.vehicle import VehicleSimulator
+from vehicle_sim.dataset import write_dataset
 
 fm = FaultManager(np.random.default_rng(0))
 fm.add("bearing_wear", start_step=3000, ramp_steps=1500)
 fm.add("cooling_failure", start_step=6000, ramp_steps=1500)
 
-sim = TankSimulator(TankConfig(), faults=fm, seed=0)
+sim = VehicleSimulator(VehicleConfig(), faults=fm, seed=0)
 records = sim.run()                 # list of dict records
 write_dataset(sim, "data/run.csv")  # CSV with health features + labels
 ```

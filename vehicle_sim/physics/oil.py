@@ -38,16 +38,16 @@ import math
 
 import numpy as np
 
-from ..config import TankConfig
+from ..config import VehicleConfig
 
 
-def oil_viscosity(cfg: TankConfig, temperature_c: float) -> float:
+def oil_viscosity(cfg: VehicleConfig, temperature_c: float) -> float:
     """Arrhenius-type viscosity in Pa*s at a given oil temperature (C)."""
     t_k = temperature_c + 273.15
     return cfg.oil_A * math.exp(cfg.oil_E / (cfg.R_UNIVERSAL * t_k))
 
 
-def pressure_drop(cfg: TankConfig, viscosity: float, flow: float,
+def pressure_drop(cfg: VehicleConfig, viscosity: float, flow: float,
                   radius: float, length: float) -> float:
     """Hagen-Poiseuille pressure drop across a passage (Pa)."""
     return 8.0 * viscosity * length * flow / (math.pi * radius**4)
@@ -61,7 +61,7 @@ class OilPressureSensor:
     pressure drop through the filter and gallery.
     """
 
-    def __init__(self, cfg: TankConfig, rng: np.random.Generator | None = None):
+    def __init__(self, cfg: VehicleConfig, rng: np.random.Generator | None = None):
         self.cfg = cfg
         self.rng = rng or np.random.default_rng(cfg.noise_seed)
 
@@ -94,7 +94,7 @@ class OilDebrisSensor:
     size and material.  The generation rate rises with wear severity.
     """
 
-    def __init__(self, cfg: TankConfig, rng: np.random.Generator | None = None):
+    def __init__(self, cfg: VehicleConfig, rng: np.random.Generator | None = None):
         self.cfg = cfg
         self.rng = rng or np.random.default_rng(cfg.noise_seed)
         self.coil_N = 200

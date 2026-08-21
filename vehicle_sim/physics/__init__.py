@@ -1,7 +1,7 @@
 """Physics-based sensor simulation modules.
 
 Each module implements the equations documented in
-``Physics_Based_Sensor_Equations_Military_Tank_Preventive_Maintenance.docx``
+``Physics_Based_Sensor_Equations_Vehicle_Preventive_Maintenance.docx``
 and exposes a ``Sensor`` class that converts the evolving shared
 state into a measured signal, plus the physics-derived features that
 feed the AI layer.

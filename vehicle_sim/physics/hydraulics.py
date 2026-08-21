@@ -23,13 +23,13 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..config import TankConfig
+from ..config import VehicleConfig
 
 
 class HydraulicSensor:
     """Simulates the turret-stabiliser / steering hydraulic circuit."""
 
-    def __init__(self, cfg: TankConfig, rng: np.random.Generator | None = None):
+    def __init__(self, cfg: VehicleConfig, rng: np.random.Generator | None = None):
         self.cfg = cfg
         self.rng = rng or np.random.default_rng(cfg.noise_seed)
 

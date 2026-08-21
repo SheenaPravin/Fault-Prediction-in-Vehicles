@@ -1,4 +1,4 @@
-"""Physics-informed simulator for military battle-tank
+"""Physics-informed simulator for military vehicle
 preventive maintenance.
 
 Sensors are simulated from physics-based equations and coupled to a

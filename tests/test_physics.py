@@ -3,9 +3,9 @@ import unittest
 
 import numpy as np
 
-from tank_sim.config import TankConfig
-from tank_sim.faults import FaultManager
-from tank_sim.physics import (
+from vehicle_sim.config import VehicleConfig
+from vehicle_sim.faults import FaultManager
+from vehicle_sim.physics import (
     AcousticEmissionSensor,
     ExhaustSensor,
     HydraulicSensor,
@@ -20,19 +20,19 @@ from tank_sim.physics import (
     oil_viscosity,
     pressure_drop,
 )
-from tank_sim.physics.vibration import kurtosis, rms
-from tank_sim.tank import TankSimulator
+from vehicle_sim.physics.vibration import kurtosis, rms
+from vehicle_sim.vehicle import VehicleSimulator
 
 
 class TestCharacteristicFrequencies(unittest.TestCase):
     def test_shaft_frequency(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         f = characteristic_frequencies(cfg, 1200.0)
         self.assertAlmostEqual(f["f_r"], 20.0, places=6)
         self.assertAlmostEqual(f["f_gmf"], 360.0, places=6)
 
     def test_bpfo_less_than_bpfi(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         f = characteristic_frequencies(cfg, 1500.0)
         self.assertLess(f["BPFO"], f["BPFI"])
 
@@ -54,7 +54,7 @@ class TestVibration(unittest.TestCase):
         self.assertGreater(kurtosis(impulsive), kurtosis(smooth))
 
     def test_bearing_fault_raises_rms_and_kurtosis(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         sensor = VibrationSensor(cfg, np.random.default_rng(1))
         healthy = sensor.features(1800.0, 0.0, "none")
         faulty = sensor.features(1800.0, 1.0, "bearing_outer")
@@ -64,7 +64,7 @@ class TestVibration(unittest.TestCase):
 
 class TestThermal(unittest.TestCase):
     def test_load_raises_temperature(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         low = ThermalSystem(cfg)
         high = ThermalSystem(cfg)
         for _ in range(200):
@@ -73,7 +73,7 @@ class TestThermal(unittest.TestCase):
         self.assertGreater(high.T_engine, low.T_engine)
 
     def test_cooling_failure_heats_up(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         ok = ThermalSystem(cfg)
         bad = ThermalSystem(cfg)
         for _ in range(300):
@@ -84,20 +84,20 @@ class TestThermal(unittest.TestCase):
 
 class TestOil(unittest.TestCase):
     def test_viscosity_drops_with_temperature(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         cold = oil_viscosity(cfg, 40.0)
         hot = oil_viscosity(cfg, 95.0)
         self.assertGreater(cold, hot)
 
     def test_pressure_drop_increases_with_flow(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         mu = oil_viscosity(cfg, 90.0)
         self.assertGreater(
             pressure_drop(cfg, mu, 0.002, cfg.filter_r, cfg.filter_L),
             pressure_drop(cfg, mu, 0.0005, cfg.filter_r, cfg.filter_L))
 
     def test_pump_fault_lowers_pressure(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         thermal = ThermalSystem(cfg)
         sensor = OilPressureSensor(cfg, np.random.default_rng(0))
         healthy = sensor.read(thermal, 0.5, pump_eff=1.0)
@@ -105,7 +105,7 @@ class TestOil(unittest.TestCase):
         self.assertGreater(healthy["oil_pressure"], degraded["oil_pressure"])
 
     def test_debris_rate_grows_with_severity(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         sensor = OilDebrisSensor(cfg, np.random.default_rng(0))
         low = sensor.read(0.0, 1.0)
         high = sensor.read(1.0, 1.0)
@@ -114,14 +114,14 @@ class TestOil(unittest.TestCase):
 
 class TestOtherSensors(unittest.TestCase):
     def test_torque_shear_stress_scales(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         sensor = TorqueSensor(cfg, np.random.default_rng(0))
         a = sensor.read(1500.0, 200000.0)
         b = sensor.read(1500.0, 500000.0)
         self.assertGreater(b["shaft_shear_stress"], a["shaft_shear_stress"])
 
     def test_lambda_lean_high_o2(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         thermal = ThermalSystem(cfg)
         sensor = ExhaustSensor(cfg, np.random.default_rng(0))
         lean = sensor.read(thermal, 2000.0, 0.5, fuel_mult=0.7)
@@ -129,7 +129,7 @@ class TestOtherSensors(unittest.TestCase):
         self.assertGreater(lean["exhaust_o2_pct"], 0.0)
 
     def test_fuel_level_decreases(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         sensor = LevelSensor(cfg, np.random.default_rng(0))
         before = sensor.read(0.9, 1.0)
         for _ in range(50):
@@ -138,7 +138,7 @@ class TestOtherSensors(unittest.TestCase):
         self.assertLess(after["fuel_level"], before["fuel_level"])
 
     def test_torsion_stiffness_and_fatigue(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         bar = TorsionBar(cfg)
         a = bar.read(20000.0)
         b = bar.read(20000.0, stiffness_mult=0.6)
@@ -146,7 +146,7 @@ class TestOtherSensors(unittest.TestCase):
         self.assertGreater(b["torsion_cumulative_twist"], 0.0)
 
     def test_ae_activity_grows(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         sensor = AcousticEmissionSensor(cfg, np.random.default_rng(0))
         low = sensor.read(0.0, 1.0)
         high = sensor.read(1.0, 1.0)
@@ -168,12 +168,12 @@ class TestFaultManager(unittest.TestCase):
         self.assertEqual(p["vib_severity"], 0.0)
 
 
-class TestTankSimulator(unittest.TestCase):
+class TestVehicleSimulator(unittest.TestCase):
     def test_run_shape_and_labels(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         fm = FaultManager(np.random.default_rng(0))
         fm.add("bearing_wear", start_step=200, ramp_steps=100)
-        sim = TankSimulator(cfg, faults=fm, seed=0)
+        sim = VehicleSimulator(cfg, faults=fm, seed=0)
         records = sim.run()
         self.assertGreater(len(records), 1000)
         self.assertIn("fault_bearing_wear", records[0])
@@ -181,10 +181,10 @@ class TestTankSimulator(unittest.TestCase):
         self.assertEqual(records[-1]["fault_bearing_wear"], 1.0)
 
     def test_fault_changes_signals(self):
-        cfg = TankConfig()
+        cfg = VehicleConfig()
         fm = FaultManager(np.random.default_rng(0))
         fm.add("cooling_failure", start_step=100, ramp_steps=100)
-        sim = TankSimulator(cfg, faults=fm, seed=0)
+        sim = VehicleSimulator(cfg, faults=fm, seed=0)
         records = sim.run()
         temps = [r["coolant_temp"] for r in records]
         self.assertGreater(temps[-1], temps[0])

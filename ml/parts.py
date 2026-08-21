@@ -137,7 +137,7 @@ PARTS = {
         "alarm_key": "ae_event_rate",
     },
     "overall": {
-        "label": "Overall Tank",
+        "label": "Overall Vehicle",
         "params": [
             {"key": "health_index", "label": "Fused Health Index", "unit": "",
              "min": 0, "max": 100, "warn_lo": 40, "crit_lo": 25,

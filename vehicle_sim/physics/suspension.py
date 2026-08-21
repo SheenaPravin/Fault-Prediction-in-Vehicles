@@ -33,10 +33,10 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..config import TankConfig
+from ..config import VehicleConfig
 
 
-def torsion_stiffness(cfg: TankConfig) -> float:
+def torsion_stiffness(cfg: VehicleConfig) -> float:
     """Torsional stiffness K = J G / L in N*m/rad."""
     j = np.pi * cfg.torsion_r**4 / 2.0
     return j * cfg.torsion_G / cfg.torsion_L
@@ -45,7 +45,7 @@ def torsion_stiffness(cfg: TankConfig) -> float:
 class StrainSensor:
     """Strain-gauge load sensor on a suspension arm / torsion bar."""
 
-    def __init__(self, cfg: TankConfig, rng: np.random.Generator | None = None):
+    def __init__(self, cfg: VehicleConfig, rng: np.random.Generator | None = None):
         self.cfg = cfg
         self.rng = rng or np.random.default_rng(cfg.noise_seed)
 
@@ -68,7 +68,7 @@ class StrainSensor:
 class TorsionBar:
     """Torsion-bar sensor: torque and twist history, fatigue accumulation."""
 
-    def __init__(self, cfg: TankConfig):
+    def __init__(self, cfg: VehicleConfig):
         self.cfg = cfg
         self.cumulative_twist_rad = 0.0
 
@@ -89,7 +89,7 @@ class TorsionBar:
 class ShockSensor:
     """Accelerometer measuring terrain shock loads on the hull."""
 
-    def __init__(self, cfg: TankConfig, rng: np.random.Generator | None = None):
+    def __init__(self, cfg: VehicleConfig, rng: np.random.Generator | None = None):
         self.cfg = cfg
         self.rng = rng or np.random.default_rng(cfg.noise_seed)
 

@@ -1,4 +1,4 @@
-"""Train the LSTM RUL/fault model on physics-simulated tank scenarios and
+"""Train the LSTM RUL/fault model on physics-simulated vehicle scenarios and
 export everything the GitHub-Pages dashboard needs:
 
     docs/model.json        LSTM weights (browser forward pass)

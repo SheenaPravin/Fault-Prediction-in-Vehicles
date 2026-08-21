@@ -36,10 +36,10 @@ import math
 
 import numpy as np
 
-from ..config import TankConfig
+from ..config import VehicleConfig
 
 
-def characteristic_frequencies(cfg: TankConfig, rpm: float) -> dict[str, float]:
+def characteristic_frequencies(cfg: VehicleConfig, rpm: float) -> dict[str, float]:
     """Return f_r, f_GMF, BPFO and BPFI in Hz for a given shaft RPM."""
     f_r = rpm / 60.0
     f_gmf = rpm * cfg.drive_pinion_teeth / 60.0
@@ -75,7 +75,7 @@ class VibrationSensor:
     Fault severity scales the defect amplitudes and impulse energy.
     """
 
-    def __init__(self, cfg: TankConfig, rng: np.random.Generator | None = None):
+    def __init__(self, cfg: VehicleConfig, rng: np.random.Generator | None = None):
         self.cfg = cfg
         self.rng = rng or np.random.default_rng(cfg.noise_seed)
 

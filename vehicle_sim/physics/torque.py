@@ -24,13 +24,13 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..config import TankConfig
+from ..config import VehicleConfig
 
 
 class TorqueSensor:
     """Simulates a strain-based shaft torque sensor on the drivetrain."""
 
-    def __init__(self, cfg: TankConfig, rng: np.random.Generator | None = None):
+    def __init__(self, cfg: VehicleConfig, rng: np.random.Generator | None = None):
         self.cfg = cfg
         self.rng = rng or np.random.default_rng(cfg.noise_seed)
 

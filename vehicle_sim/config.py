@@ -1,7 +1,7 @@
-"""Default parameters of the simulated battle-tank model.
+"""Default parameters of the simulated vehicle model.
 
 All values are representative for a heavy tracked military vehicle
-(e.g. a main battle tank) and are used by the physics modules to turn
+(e.g. a main vehicle) and are used by the physics modules to turn
 raw physical quantities into realistic sensor readings.
 """
 
@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 
 
 @dataclass
-class TankConfig:
+class VehicleConfig:
     # --- Universal constants ----------------------------------------------------
     R_UNIVERSAL: float = 8.314          # J/(mol K)
     P_REF_AIR: float = 20e-6            # Pa, acoustic reference pressure
@@ -66,11 +66,11 @@ class TankConfig:
     exhaust_pressure_base: float = 1.25e5  # Pa
 
     # --- Fuel / fluid levels ----------------------------------------------------
-    fuel_tank_r: float = 0.30              # m
-    fuel_tank_h: float = 0.90              # m
+    fuel_vehicle_r: float = 0.30              # m
+    fuel_vehicle_h: float = 0.90              # m
     fuel_permittivity: float = 2.1         # relative dielectric of diesel
     oil_sump_h: float = 0.35               # m oil level equivalent height
-    coolant_h: float = 0.40                # m coolant expansion tank height
+    coolant_h: float = 0.40                # m coolant expansion vehicle height
     fuel_burn_rate: float = 1.6e-4         # m^3/s full-load fuel burn
 
     # --- Hydraulics -------------------------------------------------------------

@@ -29,13 +29,13 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..config import TankConfig
+from ..config import VehicleConfig
 
 
 class AcousticSensor:
     """Microphone measuring airborne mechanical noise (SPL + spectrum)."""
 
-    def __init__(self, cfg: TankConfig, rng: np.random.Generator | None = None):
+    def __init__(self, cfg: VehicleConfig, rng: np.random.Generator | None = None):
         self.cfg = cfg
         self.rng = rng or np.random.default_rng(cfg.noise_seed)
 
@@ -76,7 +76,7 @@ class AcousticEmissionSensor:
     progresses.
     """
 
-    def __init__(self, cfg: TankConfig, rng: np.random.Generator | None = None):
+    def __init__(self, cfg: VehicleConfig, rng: np.random.Generator | None = None):
         self.cfg = cfg
         self.rng = rng or np.random.default_rng(cfg.noise_seed)
 

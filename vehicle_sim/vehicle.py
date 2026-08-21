@@ -1,4 +1,4 @@
-"""Battle-tank simulation orchestrator.
+"""Vehicle simulation orchestrator.
 
 Couples the physics modules through a shared evolving state, applies
 fault-induced parameter perturbations, samples every sensor each time
@@ -15,7 +15,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from .config import TankConfig
+from .config import VehicleConfig
 from .faults import FaultManager
 from .physics import (
     AcousticEmissionSensor,
@@ -69,8 +69,8 @@ class MissionStep:
     terrain: float
 
 
-def default_mission(cfg: TankConfig) -> list[MissionStep]:
-    """A representative tank mission: idle -> road cruise -> sprint ->
+def default_mission(cfg: VehicleConfig) -> list[MissionStep]:
+    """A representative vehicle mission: idle -> road cruise -> sprint ->
     rough-terrain traverse -> idle (hot soak)."""
     return [
         MissionStep(60.0, cfg.idle_speed_rpm, 0.10, 0.1),
@@ -82,14 +82,14 @@ def default_mission(cfg: TankConfig) -> list[MissionStep]:
     ]
 
 
-class TankSimulator:
+class VehicleSimulator:
     """Runs the coupled physics simulation and yields labelled samples."""
 
-    def __init__(self, cfg: TankConfig | None = None,
+    def __init__(self, cfg: VehicleConfig | None = None,
                  faults: FaultManager | None = None,
                  mission: list[MissionStep] | None = None,
                  seed: int | None = None):
-        self.cfg = cfg or TankConfig()
+        self.cfg = cfg or VehicleConfig()
         seed = seed if seed is not None else self.cfg.noise_seed
         self.rng = np.random.default_rng(seed)
         self.faults = faults or FaultManager(self.rng)

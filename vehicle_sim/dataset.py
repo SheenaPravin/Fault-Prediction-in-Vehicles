@@ -8,10 +8,10 @@ from pathlib import Path
 import numpy as np
 
 from .features import HealthFeatures
-from .tank import TankSimulator
+from .vehicle import VehicleSimulator
 
 
-def write_dataset(sim: TankSimulator, out_path: str,
+def write_dataset(sim: VehicleSimulator, out_path: str,
                   add_health: bool = True, health_window: int = 100) -> Path:
     """Run the simulation and write a labelled CSV dataset.
 

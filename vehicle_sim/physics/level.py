@@ -11,11 +11,11 @@ changes, so capacitance becomes a function of height:
 
     C = C(h)
 
-Cylindrical tank volume:
+Cylindrical vehicle volume:
 
     V = pi r^2 h
 
-With tank-specific calibration, capacitance is converted into liquid
+With vehicle-specific calibration, capacitance is converted into liquid
 height and volume for fuel, oil and coolant.
 """
 
@@ -23,16 +23,16 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..config import TankConfig
+from ..config import VehicleConfig
 
-TANK_GEOMETRY = {
+VEHICLE_GEOMETRY = {
     "fuel": {"radius": None, "permittivity": None},
     "oil": {"radius": None, "permittivity": None},
     "coolant": {"radius": None, "permittivity": None},
 }
 
 
-def capacitance_level(cfg: TankConfig, height_frac: float,
+def capacitance_level(cfg: VehicleConfig, height_frac: float,
                       permittivity_r: float, area: float, gap: float) -> float:
     """Capacitance (F) of a level sensor partially immersed in liquid."""
     eps = cfg.EPSILON_0 * permittivity_r
@@ -45,7 +45,7 @@ class LevelSensor:
     A leak fault reduces the level faster than nominal consumption.
     """
 
-    def __init__(self, cfg: TankConfig, rng: np.random.Generator | None = None):
+    def __init__(self, cfg: VehicleConfig, rng: np.random.Generator | None = None):
         self.cfg = cfg
         self.rng = rng or np.random.default_rng(cfg.noise_seed)
         self.fuel_h = 0.82
@@ -60,11 +60,11 @@ class LevelSensor:
              coolant_leak: float = 0.0) -> dict[str, float]:
         cfg = self.cfg
         burn = cfg.fuel_burn_rate * load
-        self.fuel_h = max(self.fuel_h - (burn + fuel_leak) * dt / (np.pi * cfg.fuel_tank_r**2), 0.0)
+        self.fuel_h = max(self.fuel_h - (burn + fuel_leak) * dt / (np.pi * cfg.fuel_vehicle_r**2), 0.0)
         self.oil_h = max(self.oil_h - oil_leak * dt / 0.08, 0.05)
         self.coolant_h = max(self.coolant_h - coolant_leak * dt / 0.06, 0.05)
 
-        fuel_frac = self.fuel_h / cfg.fuel_tank_h
+        fuel_frac = self.fuel_h / cfg.fuel_vehicle_h
         oil_frac = self.oil_h / cfg.oil_sump_h
         coolant_frac = self.coolant_h / cfg.coolant_h
 
@@ -74,5 +74,5 @@ class LevelSensor:
             "coolant_level": float(coolant_frac),
             "fuel_capacitance_pf": float(capacitance_level(
                 cfg, fuel_frac, cfg.fuel_permittivity, self.area, self.gap) * 1e12),
-            "fuel_volume": float(np.pi * cfg.fuel_tank_r**2 * self.fuel_h),
+            "fuel_volume": float(np.pi * cfg.fuel_vehicle_r**2 * self.fuel_h),
         }

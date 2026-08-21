@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..config import TankConfig
+from ..config import VehicleConfig
 
 
 class ThermalSystem:
@@ -35,7 +35,7 @@ class ThermalSystem:
     of the generated heat is rejected through the exhaust.
     """
 
-    def __init__(self, cfg: TankConfig, ambient: float = 25.0):
+    def __init__(self, cfg: VehicleConfig, ambient: float = 25.0):
         self.cfg = cfg
         self.ambient = ambient
         self.T_engine = 45.0 + 0.1 * cfg.noise_seed  # initial warm-up state
@@ -60,7 +60,7 @@ class ThermalSystem:
 class EngineTemperatureSensor:
     """RTD reading of engine coolant temperature."""
 
-    def __init__(self, cfg: TankConfig, rng: np.random.Generator | None = None):
+    def __init__(self, cfg: VehicleConfig, rng: np.random.Generator | None = None):
         self.cfg = cfg
         self.rng = rng or np.random.default_rng(cfg.noise_seed)
         self.alpha = 0.00385  # 1/K for platinum RTD
@@ -78,7 +78,7 @@ class EngineTemperatureSensor:
 class CoolantSensor:
     """Exhaust-gas temperature (thermocouple) reading."""
 
-    def __init__(self, cfg: TankConfig, rng: np.random.Generator | None = None):
+    def __init__(self, cfg: VehicleConfig, rng: np.random.Generator | None = None):
         self.cfg = cfg
         self.rng = rng or np.random.default_rng(cfg.noise_seed)
         self.seebeck = 41.0e-6  # V/K (type-K approximation)

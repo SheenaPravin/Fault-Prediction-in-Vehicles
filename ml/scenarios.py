@@ -10,9 +10,9 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from tank_sim.config import TankConfig
-from tank_sim.faults import FaultManager
-from tank_sim.tank import TankSimulator, MissionStep, default_mission
+from vehicle_sim.config import VehicleConfig
+from vehicle_sim.faults import FaultManager
+from vehicle_sim.vehicle import VehicleSimulator, MissionStep, default_mission
 
 from .parts import (
     FAIL_HEALTH,
@@ -55,7 +55,7 @@ def scenario_suite() -> list[Scenario]:
 
 
 def _mission_for_steps(steps: int, dt: float) -> list[MissionStep]:
-    base = default_mission(TankConfig())
+    base = default_mission(VehicleConfig())
     total_duration = steps * dt
     base_duration = sum(m.duration_s for m in base)
     factor = total_duration / base_duration
@@ -66,7 +66,7 @@ def _mission_for_steps(steps: int, dt: float) -> list[MissionStep]:
 def run_scenario(scenario: Scenario, window_samples: int = 512,
                  sample_rate: float = 500.0) -> tuple[list[dict], np.ndarray]:
     """Simulate one scenario; return (records, fault_label_per_step)."""
-    cfg = TankConfig()
+    cfg = VehicleConfig()
     cfg.window_samples = window_samples
     cfg.sample_rate = sample_rate
     rng = np.random.default_rng(scenario.seed)
@@ -74,7 +74,7 @@ def run_scenario(scenario: Scenario, window_samples: int = 512,
     for name, start_frac in scenario.faults:
         fm.add(name, start_step=int(scenario.steps * start_frac),
                ramp_steps=max(int(scenario.steps * 0.22), 50))
-    sim = TankSimulator(cfg, faults=fm,
+    sim = VehicleSimulator(cfg, faults=fm,
                         mission=_mission_for_steps(scenario.steps, cfg.dt),
                         seed=scenario.seed)
     records = sim.run()[: scenario.steps]
@@ -188,7 +188,7 @@ def build_dataset(window_samples: int = 512, sample_rate: float = 500.0,
         "records": demo_records,
         "health": {p: demo_health[p].tolist() for p in PART_ORDER},
         "meta": {"name": demo.name, "steps": len(demo_records),
-                 "dt": TankConfig().dt,
+                 "dt": VehicleConfig().dt,
                  "faults": [f for f, _ in demo_faults]},
     }
     return {
