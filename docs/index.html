@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battle Tank Predictive Maintenance Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <h1>⚙ FAULT-PREDICTION-IN-VEHICLES</h1>
+    <span class="sub">Physics-Informed Digital Twin &middot; Military Battle Tank Preventive Maintenance</span>
+  </div>
+  <div class="status-box">
+    <span class="status-label">SYSTEM STATUS</span>
+    <div id="statusBadge" class="badge healthy">HEALTHY</div>
+  </div>
+  <div class="clock-box">
+    <span class="status-label">MISSION TIME</span>
+    <div id="missionClock" class="digital small">00:00</div>
+    <div id="missionProgress" class="progress"><div id="missionBar"></div></div>
+  </div>
+</header>
+
+<section class="controls">
+  <button id="btnPlay" class="ctl-btn">❚❚</button>
+  <div class="speed-group">
+    <label>SPEED</label>
+    <button data-speed="1" class="speed-btn active">1&times;</button>
+    <button data-speed="2" class="speed-btn">2&times;</button>
+    <button data-speed="5" class="speed-btn">5&times;</button>
+    <button data-speed="10" class="speed-btn">10&times;</button>
+  </div>
+  <input type="range" id="scrubber" min="0" max="100" value="0">
+  <span class="mission-name" id="missionName">loading…</span>
+  <span id="injectedFaults" class="fault-chips"></span>
+</section>
+
+<div id="sosBanner" class="sos hidden">
+  🚨 <b>SOS — CRITICAL FAULT</b> 🚨
+  <span id="sosDetail"></span>
+</div>
+
+<main>
+  <section id="overall" class="panel overall-panel">
+    <div class="panel-head"><h2>OVERALL TANK HEALTH</h2>
+      <span id="overallMode" class="badge healthy">HEALTHY</span>
+    </div>
+    <div class="overall-body">
+      <div class="gauge-wrap">
+        <canvas id="gauge_overall" width="300" height="210"></canvas>
+      </div>
+      <div class="overall-metrics">
+        <div class="metric">
+          <span class="m-label">REMAINING USEFUL LIFE</span>
+          <span id="rulOverall" class="digital big">--</span>
+          <span class="m-sub" id="rulOverallPct">--</span>
+        </div>
+        <div class="metric">
+          <span class="m-label">PREDICTED FAULT</span>
+          <div id="clsBars" class="cls-bars"></div>
+        </div>
+        <div class="vitals">
+          <div class="vital"><span>RPM</span><b id="v_rpm" class="digital small">--</b></div>
+          <div class="vital"><span>LOAD</span><b id="v_load" class="digital small">--</b></div>
+          <div class="vital"><span>TERRAIN</span><b id="v_terrain" class="digital small">--</b></div>
+          <div class="vital"><span>OIL P</span><b id="v_oilp" class="digital small">--</b></div>
+          <div class="vital"><span>OIL T</span><b id="v_oilt" class="digital small">--</b></div>
+          <div class="vital"><span>VIB RMS</span><b id="v_vibrms" class="digital small">--</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="parts-grid" class="grid"></section>
+</main>
+
+<footer>
+  <span id="modelInfo">LSTM loading…</span>
+  <span class="legend"><i class="dot green"></i>Normal <i class="dot amber"></i>Warning <i class="dot red"></i>Critical</span>
+</footer>
+
+<script src="lstm.js"></script>
+<script src="gauges.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>
