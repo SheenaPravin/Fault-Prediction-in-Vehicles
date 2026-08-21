@@ -1,11 +1,11 @@
-"""Battle-tank digital-twin orchestrator.
+"""Battle-tank simulation orchestrator.
 
 Couples the physics modules through a shared evolving state, applies
 fault-induced parameter perturbations, samples every sensor each time
 step and assembles a labelled record (feature vector + fault labels)
 ready for the AI layer.
 
-    Sensors -> Physics Features -> Digital Twin -> AI
+    Sensors -> Physics Features -> Vehicle State -> AI
                       (anomaly / fault / RUL)
 """
 

@@ -28,6 +28,9 @@ def main() -> None:
     ap.add_argument("--window", type=int, default=40)
     ap.add_argument("--stride", type=int, default=6)
     ap.add_argument("--demo-steps", type=int, default=2000)
+    ap.add_argument("--w-reg", type=float, default=2.0)
+    ap.add_argument("--w-cls", type=float, default=1.5,
+                    help="classification loss weight")
     ap.add_argument("--quick", action="store_true",
                     help="small dataset for smoke testing")
     args = ap.parse_args()
@@ -55,7 +58,8 @@ def main() -> None:
           f"windows: train={sum(len(s['X']) for s in train_sets)}")
 
     print("Training LSTM (RUL regression + fault classification) ...")
-    train(model, train_sets, val_sets, epochs=args.epochs)
+    train(model, train_sets, val_sets, epochs=args.epochs,
+          w_reg=args.w_reg, w_cls=args.w_cls)
 
     # ---- evaluation on held-out scenarios --------------------------------
     print("\nEvaluation (held-out scenarios):")

@@ -46,7 +46,10 @@ class ThermalSystem:
              cooling_eff: float = 1.0, load_multiplier: float = 1.0) -> None:
         cfg = self.cfg
         q_gen = cfg.max_fuel_energy_rate * load * load_multiplier
-        q_cool = cfg.coolant_power * max(self.T_engine - self.ambient, 0.0) * cooling_eff
+        # Radiator + fan + oil cooler effectiveness rises with duty cycle,
+        # otherwise the linear balance never reaches an equilibrium.
+        k_eff = cfg.coolant_power * (1.0 + 3.0 * load)
+        q_cool = k_eff * max(self.T_engine - self.ambient, 0.0) * cooling_eff
         q_exhaust = 0.30 * q_gen
         dT = (q_gen - q_cool - q_exhaust) / (cfg.engine_mass_thermal * cfg.c_p_coolant)
         self.T_engine += dT * cfg.dt

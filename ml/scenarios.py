@@ -143,7 +143,7 @@ def make_windows(features: np.ndarray, rul: np.ndarray, labels: np.ndarray,
 
 def build_dataset(window_samples: int = 512, sample_rate: float = 500.0,
                   window: int = 40, stride: int = 6,
-                  demo_steps: int = 1800, demo_faults: list[tuple] | None = None,
+                  demo_steps: int = 3000, demo_faults: list[tuple] | None = None,
                   demo_seed: int = 7) -> dict:
     """Generate everything: training arrays, scaler, demo stream."""
     suite = scenario_suite()
@@ -176,10 +176,10 @@ def build_dataset(window_samples: int = 512, sample_rate: float = 500.0,
         for sc, x, y, l in zip(suite, all_feats, all_rul, all_labels)
     ]
 
-    # Demo live stream: healthy -> bearing wear -> cooling failure -> fatigue.
+    # Demo live stream: healthy -> staged fault progression.
     if demo_faults is None:
-        demo_faults = [("bearing_wear", 0.30), ("cooling_failure", 0.52),
-                       ("torsion_fatigue", 0.74)]
+        demo_faults = [("bearing_wear", 0.25), ("cooling_failure", 0.48),
+                       ("hydraulic_valve_fault", 0.68), ("torsion_fatigue", 0.85)]
     demo = Scenario("demo_live", demo_faults, seed=demo_seed, steps=demo_steps)
     demo_records, _ = run_scenario(demo, window_samples, sample_rate)
     demo_health = part_health_series(demo_records)

@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Battle Tank Predictive Maintenance Dashboard</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Early Fault Prediction in Vehicle for Predictive Maintenance</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="topbar">
   <div class="brand">
-    <h1>⚙ FAULT-PREDICTION-IN-VEHICLES</h1>
-    <span class="sub">Physics-Informed Digital Twin &middot; Military Battle Tank Preventive Maintenance</span>
+    <span class="logo-chip"><img src="assets/vit_logo.svg" alt="VIT Chennai" class="vit-logo"></span>
+    <div class="brand-text">
+      <h1>Early Fault Prediction in Vehicle for Predictive Maintenance</h1>
+      <div class="poc">POC: Dr. Sheena C. Pravin &amp; Dr. Reena Monica P. &middot; Faculty, School of Electronics Engineering, VIT Chennai</div>
+    </div>
   </div>
   <div class="status-box">
     <span class="status-label">SYSTEM STATUS</span>
-    <div id="statusBadge" class="badge healthy">HEALTHY</div>
+    <div id="statusBadge" class="badge healthy">INITIALISING</div>
   </div>
   <div class="clock-box">
-    <span class="status-label">MISSION TIME</span>
-    <div id="missionClock" class="digital small">00:00</div>
-    <div id="missionProgress" class="progress"><div id="missionBar"></div></div>
+    <span class="status-label"><i id="liveDot" class="live-dot"></i> LIVE MISSION TIME</span>
+    <div id="missionClock" class="digital big">00:00:00</div>
+    <div id="cycleInfo" class="m-sub">connecting…</div>
   </div>
 </header>
 
 <section class="controls">
-  <button id="btnPlay" class="ctl-btn">❚❚</button>
+  <button id="btnPlay" class="ctl-btn">&#10074;&#10074;</button>
   <div class="speed-group">
     <label>SPEED</label>
     <button data-speed="1" class="speed-btn active">1&times;</button>
@@ -32,19 +35,19 @@
     <button data-speed="5" class="speed-btn">5&times;</button>
     <button data-speed="10" class="speed-btn">10&times;</button>
   </div>
-  <input type="range" id="scrubber" min="0" max="100" value="0">
+  <span class="live-tag"><i class="live-dot"></i> LIVE FEED</span>
   <span class="mission-name" id="missionName">loading…</span>
   <span id="injectedFaults" class="fault-chips"></span>
 </section>
 
 <div id="sosBanner" class="sos hidden">
-  🚨 <b>SOS — CRITICAL FAULT</b> 🚨
+  &#128680; <b>SOS — CRITICAL FAULT</b> &#128680;
   <span id="sosDetail"></span>
 </div>
 
 <main>
   <section id="overall" class="panel overall-panel">
-    <div class="panel-head"><h2>OVERALL TANK HEALTH</h2>
+    <div class="panel-head"><h2>OVERALL VEHICLE HEALTH</h2>
       <span id="overallMode" class="badge healthy">HEALTHY</span>
     </div>
     <div class="overall-body">
@@ -58,7 +61,7 @@
           <span class="m-sub" id="rulOverallPct">--</span>
         </div>
         <div class="metric">
-          <span class="m-label">PREDICTED FAULT</span>
+          <span class="m-label">PREDICTED FAULT MODE (LSTM)</span>
           <div id="clsBars" class="cls-bars"></div>
         </div>
         <div class="vitals">
@@ -73,16 +76,64 @@
     </div>
   </section>
 
-  <section id="parts-grid" class="grid"></section>
+  <div class="content-row">
+    <section id="parts-grid" class="grid"></section>
+
+    <section class="panel events-panel">
+      <div class="panel-head"><h2>FAILURE MODE DETECTION LOG</h2>
+        <span id="eventCount" class="ev-count">0 events</span>
+      </div>
+      <div id="eventLog" class="event-log">
+        <div class="ev-empty">Monitoring… detected failure modes will be timestamped here.</div>
+      </div>
+    </section>
+  </div>
 </main>
+
+<div id="moduleModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+  <div class="modal-card">
+    <header class="modal-head">
+      <div>
+        <h2 id="modalTitle">Module</h2>
+        <span id="modalSub" class="m-sub"></span>
+      </div>
+      <div class="modal-badges">
+        <span class="modal-health">HEALTH <b id="modalHealth">--</b>/100</span>
+        <span id="modalRulBadge" class="badge healthy">RUL --</span>
+        <button id="btnCloseModal" class="ctl-btn" aria-label="Close">&#10005;</button>
+      </div>
+    </header>
+    <div class="modal-body">
+      <div class="modal-left">
+        <div class="gauge-wrap">
+          <canvas id="gauge_modal" width="240" height="180"></canvas>
+        </div>
+        <div class="metric part-rul">
+          <span class="m-label">LSTM REMAINING USEFUL LIFE</span>
+          <div class="rul-bar"><i id="modalRulBar" class="green" style="width:0%"></i></div>
+          <span class="rul-text" id="modalRulText">--</span>
+        </div>
+        <div class="m-label" style="margin-top:8px">DETECTED EVENTS — THIS MODULE</div>
+        <div id="modalEvents" class="event-log modal-events"></div>
+      </div>
+      <div class="modal-right">
+        <div class="m-label">LIVE PARAMETER TRENDS</div>
+        <div id="modalParams" class="spark-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <footer>
   <span id="modelInfo">LSTM loading…</span>
   <span class="legend"><i class="dot green"></i>Normal <i class="dot amber"></i>Warning <i class="dot red"></i>Critical</span>
 </footer>
+<footer class="credits">Early Fault Prediction in Vehicle for Predictive Maintenance &middot; POC: Dr. Sheena C. Pravin &amp; Dr. Reena Monica P. &middot; School of Electronics Engineering (SENSE), VIT Chennai</footer>
 
 <script src="lstm.js"></script>
 <script src="gauges.js"></script>
+<script src="live.js"></script>
 <script src="dashboard.js"></script>
 </body>
 </html>

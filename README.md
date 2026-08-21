@@ -1,16 +1,16 @@
 # Fault-Prediction-in-Vehicles
 
-Physics-informed digital-twin simulator for **predictive maintenance of
+Physics-informed simulator for **predictive maintenance of
 military battle tanks**. Every sensor is simulated from the physics-based
 equations in
 `Physics_Based_Sensor_Equations_Military_Tank_Preventive_Maintenance.docx`
-and coupled through an evolving digital-twin state, so that injected
+and coupled through an evolving shared vehicle state, so that injected
 faults degrade the readings in a physically consistent way.  The
 resulting labelled datasets feed AI models for anomaly detection, fault
 diagnosis and remaining-useful-life (RUL) prediction.
 
 ```
-Sensors -> Physics-Based Features -> Digital Twin -> AI -> Anomaly / Fault / RUL
+Sensors -> Physics-Based Features -> Vehicle State -> AI -> Anomaly / Fault / RUL
 ```
 
 ## Sensor families and governing physics
@@ -80,13 +80,38 @@ records = sim.run()                 # list of dict records
 write_dataset(sim, "data/run.csv")  # CSV with health features + labels
 ```
 
-## Digital-twin health fusion
+## Health fusion
 
 Following section 15 of the physics document, the fused health index
 combines vibration RMS/kurtosis, oil temperature/pressure, debris rate,
 AE activity, structural stress and lambda into a single 0–100 score;
 `rul_steps` is obtained by linear extrapolation of the health-index
 trajectory to the failure threshold (section 16).
+
+## Live dashboard (GitHub Pages)
+
+A self-contained dashboard is published at
+`https://sheenapravin.github.io/Fault-Prediction-in-Vehicles/`
+(source in `docs/`, deployed automatically by
+`.github/workflows/pages.yml` on every push).
+
+- **Live feed** — streams physics-simulated telemetry in real time with
+  play/pause and 1–10× speed control.
+- **Clickable modules** — select any subsystem card (engine, powertrain,
+  lubrication, cooling, hydraulics, suspension, structure) to open a
+  detail view with live parameter trends, per-module LSTM RUL and its
+  detection history.
+- **Failure-mode log** — every warning/critical threshold crossing,
+  health-failure crossing and AI fault-mode classification is timestamped
+  with mission time.
+- **Per-module RUL** — a pure-JS LSTM forward pass (`docs/lstm.js`) runs
+  the trained weights (`docs/model.json`) in the browser.
+
+Regenerate model + stream after changing the simulator or training:
+
+```bash
+python -m ml.train --epochs 28 --stride 8 --demo-steps 3000
+```
 
 ## Testing
 

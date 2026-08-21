@@ -1,4 +1,4 @@
-"""Default parameters of the simulated battle-tank digital twin.
+"""Default parameters of the simulated battle-tank model.
 
 All values are representative for a heavy tracked military vehicle
 (e.g. a main battle tank) and are used by the physics modules to turn
@@ -22,7 +22,7 @@ class TankConfig:
     engine_mass_thermal: float = 120.0     # kg (effective thermal mass)
     c_p_coolant: float = 4180.0            # J/(kg K) water-glycol coolant
     max_fuel_energy_rate: float = 2.5e6    # J/s full-throttle heat release
-    coolant_power: float = 900.0           # J/s per K of coolant delta-T
+    coolant_power: float = 6000.0          # J/s per K of coolant delta-T (radiator + fan + oil cooler)
 
     # --- Vibration --------------------------------------------------------------
     n_bearings: int = 12                   # rolling elements per bearing
@@ -97,7 +97,7 @@ class TankConfig:
     ae_noise: float = 0.3
 
     # --- Control / sampling -----------------------------------------------------
-    dt: float = 0.05                       # s digital-twin time step
+    dt: float = 0.05                       # s simulation time step
     sample_rate: float = 1000.0            # Hz for high-frequency bursts
     window_samples: int = 2048             # samples per feature window
     noise_seed: int = 42

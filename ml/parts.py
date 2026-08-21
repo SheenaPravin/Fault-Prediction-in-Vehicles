@@ -17,13 +17,13 @@ PARTS = {
         "params": [
             {"key": "coolant_temp", "label": "Coolant Temp", "unit": "°C",
              "min": 0, "max": 150, "warn_hi": 105, "crit_hi": 120,
-             "healthy": 90},
+             "healthy": 80},
             {"key": "oil_temp", "label": "Oil Temp", "unit": "°C",
-             "min": 0, "max": 160, "warn_hi": 115, "crit_hi": 135,
-             "healthy": 95},
+             "min": 0, "max": 160, "warn_hi": 110, "crit_hi": 130,
+             "healthy": 75},
             {"key": "exhaust_temp", "label": "Exhaust Temp", "unit": "°C",
-             "min": 0, "max": 900, "warn_hi": 680, "crit_hi": 780,
-             "healthy": 500},
+             "min": 0, "max": 500, "warn_hi": 240, "crit_hi": 300,
+             "healthy": 170},
             {"key": "lambda", "label": "Air-Fuel Ratio λ", "unit": "",
              "min": 0.6, "max": 1.6, "warn_lo": 0.9, "warn_hi": 1.2,
              "crit_lo": 0.8, "crit_hi": 1.4, "healthy": 1.0},
@@ -35,17 +35,17 @@ PARTS = {
         "label": "Powertrain",
         "params": [
             {"key": "shaft_torque", "label": "Shaft Torque", "unit": "kN·m",
-             "min": 0, "max": 8, "warn_hi": 6.2, "crit_hi": 7.0,
-             "healthy": 3.5, "scale": 0.001},
+             "min": 0, "max": 1.2, "warn_hi": 0.75, "crit_hi": 0.85,
+             "healthy": 0.45, "scale": 0.001, "decimals": 2},
             {"key": "vib_rms", "label": "Vibration RMS", "unit": "m/s²",
              "min": 0, "max": 2.5, "warn_hi": 0.75, "crit_hi": 1.2,
-             "healthy": 0.35},
+             "healthy": 0.36},
             {"key": "vib_kurtosis", "label": "Vibration Kurtosis", "unit": "",
-             "min": 0, "max": 30, "warn_hi": 8, "crit_hi": 14,
-             "healthy": 3.5},
-            {"key": "vib_dom_amp", "label": "Dominant FFT Amp", "unit": "dB",
-             "min": 0, "max": 6, "warn_hi": 1.8, "crit_hi": 3.0,
-             "healthy": 0.9},
+             "min": 0, "max": 30, "warn_hi": 4.5, "crit_hi": 8,
+             "healthy": 2.0},
+            {"key": "vib_dom_amp", "label": "Dominant FFT Amp", "unit": "",
+             "min": 0, "max": 400, "warn_hi": 160, "crit_hi": 220,
+             "healthy": 105},
         ],
         "gauge": "vib_rms",
         "alarm_key": "vib_kurtosis",
@@ -57,11 +57,11 @@ PARTS = {
              "min": 0, "max": 7, "warn_lo": 3.2, "crit_lo": 2.0,
              "healthy": 5.0, "scale": 1e-5},
             {"key": "oil_temp", "label": "Oil Temp", "unit": "°C",
-             "min": 0, "max": 160, "warn_hi": 115, "crit_hi": 135,
-             "healthy": 95},
+             "min": 0, "max": 160, "warn_hi": 110, "crit_hi": 130,
+             "healthy": 75},
             {"key": "debris_rate", "label": "Debris Rate", "unit": "/s",
              "min": 0, "max": 40, "warn_hi": 8, "crit_hi": 15,
-             "healthy": 2.0},
+             "healthy": 1.0},
             {"key": "debris_cumulative", "label": "Total Debris", "unit": "pts",
              "min": 0, "max": 4000, "warn_hi": 1200, "crit_hi": 2000,
              "healthy": 200},
@@ -91,12 +91,12 @@ PARTS = {
             {"key": "hyd_pressure", "label": "Circuit Pressure", "unit": "bar",
              "min": 0, "max": 300, "warn_lo": 140, "crit_lo": 90,
              "healthy": 210, "scale": 1e-5},
+            {"key": "hyd_force", "label": "Actuator Force", "unit": "kN",
+             "min": 0, "max": 6, "warn_lo": 2.9, "crit_lo": 2.0,
+             "healthy": 4.2, "scale": 1e-3},
             {"key": "hyd_leak_flow", "label": "Seal Leak Flow", "unit": "L/s",
              "min": 0, "max": 0.08, "warn_hi": 0.02, "crit_hi": 0.04,
-             "healthy": 0.003, "scale": 1000},
-            {"key": "hyd_flow", "label": "Circuit Flow", "unit": "L/s",
-             "min": 0, "max": 12, "warn_lo": 2.5, "crit_lo": 1.5,
-             "healthy": 6.0, "scale": 1000},
+             "healthy": 0.0002, "scale": 1000, "decimals": 4},
         ],
         "gauge": "hyd_pressure",
         "alarm_key": "hyd_pressure",
@@ -105,14 +105,14 @@ PARTS = {
         "label": "Suspension",
         "params": [
             {"key": "susp_load_kN", "label": "Road-Wheel Load", "unit": "kN",
-             "min": 0, "max": 160, "warn_hi": 120, "crit_hi": 145,
-             "healthy": 80},
+             "min": 0, "max": 220, "warn_hi": 155, "crit_hi": 175,
+             "healthy": 115},
             {"key": "susp_strain_ue", "label": "Strain", "unit": "με",
-             "min": 0, "max": 900, "warn_hi": 500, "crit_hi": 700,
-             "healthy": 250},
+             "min": 0, "max": 600, "warn_hi": 260, "crit_hi": 320,
+             "healthy": 140},
             {"key": "shock_a_rms_g", "label": "Shock RMS", "unit": "g",
-             "min": 0, "max": 8, "warn_hi": 3.5, "crit_hi": 5.0,
-             "healthy": 1.5},
+             "min": 0, "max": 8, "warn_hi": 3.2, "crit_hi": 4.5,
+             "healthy": 1.8},
         ],
         "gauge": "susp_load_kN",
         "alarm_key": "susp_strain_ue",
@@ -121,8 +121,8 @@ PARTS = {
         "label": "Structure / Torsion",
         "params": [
             {"key": "torsion_twist_deg", "label": "Torsion Twist", "unit": "°",
-             "min": 0, "max": 60, "warn_hi": 30, "crit_hi": 42,
-             "healthy": 12},
+             "min": 0, "max": 1.5, "warn_hi": 0.65, "crit_hi": 0.75,
+             "healthy": 0.4, "decimals": 2},
             {"key": "torsion_cumulative_twist", "label": "Cum. Twist", "unit": "rad",
              "min": 0, "max": 4000, "warn_hi": 1200, "crit_hi": 2000,
              "healthy": 300},
@@ -197,15 +197,22 @@ def threshold_span(part: str) -> dict[str, float]:
 
 
 def part_health_index(part: str, values: dict[str, float]) -> float:
-    """0-100 health score for one part from its parameter values."""
+    """0-100 health score for one part from its parameter values.
+
+    Raw sensor values are converted to display units via each param's
+    ``scale`` before comparing against the (display-unit) healthy
+    reference and critical thresholds.
+    """
     ref = healthy_reference(part)
     span = threshold_span(part)
     devs = []
-    for key, healthy in ref.items():
+    for p in PARTS[part]["params"]:
+        key = p["key"]
         v = values.get(key)
         if v is None:
             continue
-        dev = abs(v - healthy) / span[key]
+        v_disp = v * p.get("scale", 1.0)
+        dev = abs(v_disp - ref[key]) / span[key]
         devs.append(min(dev, 3.0))
     if not devs:
         return 100.0

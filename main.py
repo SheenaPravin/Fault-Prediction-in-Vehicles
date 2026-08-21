@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Generate physics-simulated sensor datasets for a battle-tank
-predictive-maintenance digital twin.
+predictive-maintenance simulator.
 
 Example
 -------
